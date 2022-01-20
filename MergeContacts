@@ -1,0 +1,80 @@
+package week4.day1;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Day1Asgn1 {
+	public static void main(String[] args) throws InterruptedException {
+		WebDriverManager.chromedriver().setup();
+		
+		ChromeDriver driver= new ChromeDriver();
+		
+		driver.get("http://leaftaps.com/opentaps/control/login");
+		
+		//login to the site
+		WebElement username = driver.findElement(By.id("username"));
+		username.sendKeys("DemoSalesManager");
+				
+		driver.findElement(By.id("password")).sendKeys("crmsfa");
+		
+		driver.findElement(By.className("decorativeSubmit")).click();
+		
+		driver.findElement(By.linkText("CRM/SFA")).click();
+		
+		//click on contacts
+		driver.findElement(By.linkText("Contacts")).click();
+		
+		//click on merge contacts
+		driver.findElement(By.xpath("//a[text()='Merge Contacts']")).click();
+		
+		//click on from widget
+		driver.findElement(By.xpath("//table[@id='widget_ComboBox_partyIdFrom']/following :: img")).click();
+		
+		//go to child window
+		Set <String> windowhandles = driver.getWindowHandles();
+		List<String> windows= new ArrayList<String>(windowhandles);
+		driver.switchTo().window(windows.get(1));
+		
+		
+		//click on first value
+		WebDriverWait w= new WebDriverWait(driver, Duration.ofSeconds(10));
+		w.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='x-grid3-cell-inner x-grid3-col-partyId']//a[1]")));
+		driver.findElement(By.xpath("//div[@class='x-grid3-cell-inner x-grid3-col-partyId']//a[1]")).click();
+
+		//move back to parent window
+		driver.switchTo().window(windows.get(0));
+		
+		//click on to widget
+		driver.findElement(By.xpath("//table[@id='widget_ComboBox_partyIdTo']/following :: img")).click();
+		
+		//go to child window
+		Set <String> windowhandles2 = driver.getWindowHandles();
+		List<String> windows2= new ArrayList<String>(windowhandles2);
+		driver.switchTo().window(windows2.get(1));
+		
+		//click on second value
+		WebDriverWait w2= new WebDriverWait(driver, Duration.ofSeconds(10));
+		w2.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='x-grid3-cell-inner x-grid3-col-partyId']//a[1]")));
+		driver.findElement(By.xpath("//div[@class='x-grid3-cell-inner x-grid3-col-partyId']//a[1]")).click();
+
+		//move back to parent window
+		driver.switchTo().window(windows.get(0));
+		
+		driver.findElement(By.linkText("Merge")).click();
+		driver.switchTo().alert().accept();
+		
+		System.out.println(driver.getTitle());
+}
+}
